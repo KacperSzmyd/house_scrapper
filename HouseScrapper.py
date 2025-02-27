@@ -2,6 +2,7 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import ElementNotInteractableException
 
 
 class HouseScrapper:
@@ -16,12 +17,16 @@ class HouseScrapper:
 
     def get_houses(self):
         self.driver.get("https://www.nieruchomosci-online.pl")
+        self.driver.maximize_window()
 
-        accept_cookies = self.driver.find_element(
-            By.XPATH, value='//*[@id="ckInfoBox"]/div/div/ul/li[2]/span'
-        )
-        accept_cookies.click()
-        sleep(2)
+        try:
+            accept_cookies = self.driver.find_element(
+                By.XPATH, value='//*[@id="ckInfoBox"]/div/div/ul/li[2]/span'
+            )
+            accept_cookies.click()
+            sleep(2)
+        except ElementNotInteractableException:
+            print("Cookies already accepted")
 
         self.open_dropdown()
         sleep(2)
@@ -49,3 +54,27 @@ class HouseScrapper:
 
     def get_current_url(self):
         return self.driver.current_url
+
+    def apply_filters(self):
+        filter_menu = self.driver.find_element(
+            By.XPATH, value='//*[@id="searchHandlePopup"]/div/div[4]/div/span[1]'
+        )
+        filter_menu.click()
+        sleep(2)
+
+        filter_minimum = self.driver.find_element(
+            By.XPATH, value='//*[@id="pricefrom"]'
+        )
+        filter_minimum.send_keys(self.min_price)
+        filter_minimum.send_keys(Keys.ENTER)
+        sleep(2)
+
+        filter_maximum = self.driver.find_element(By.XPATH, value='//*[@id="priceto"]')
+        filter_maximum.send_keys(self.max_price)
+        filter_minimum.send_keys(Keys.ENTER)
+        sleep(2)
+
+        submit_filters = self.driver.find_element(
+            By.XPATH, value='//*[@id="search-action-popup-submit"]'
+        )
+        submit_filters.click()
