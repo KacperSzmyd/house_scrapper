@@ -6,10 +6,8 @@ from selenium.common.exceptions import ElementNotInteractableException
 
 
 class HouseScrapper:
-    def __init__(self, localization, min_price=1000000, max_price=2000000):
+    def __init__(self, localization):
         self.localization = localization
-        self.min_price = min_price
-        self.max_price = max_price
 
         self.chrome_options = webdriver.ChromeOptions()
         self.chrome_options.add_experimental_option("detach", True)
@@ -55,7 +53,7 @@ class HouseScrapper:
     def get_current_url(self):
         return self.driver.current_url
 
-    def apply_filters(self):
+    def apply_filters(self, min_price=1000000, max_price=2000000):
         filter_menu = self.driver.find_element(
             By.XPATH, value='//*[@id="searchHandlePopup"]/div/div[4]/div/span[1]'
         )
@@ -65,12 +63,12 @@ class HouseScrapper:
         filter_minimum = self.driver.find_element(
             By.XPATH, value='//*[@id="pricefrom"]'
         )
-        filter_minimum.send_keys(self.min_price)
+        filter_minimum.send_keys(min_price)
         filter_minimum.send_keys(Keys.ENTER)
         sleep(2)
 
         filter_maximum = self.driver.find_element(By.XPATH, value='//*[@id="priceto"]')
-        filter_maximum.send_keys(self.max_price)
+        filter_maximum.send_keys(max_price)
         filter_minimum.send_keys(Keys.ENTER)
         sleep(2)
 
