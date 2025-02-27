@@ -114,6 +114,7 @@ class HouseScrapper:
         return houses_data
 
     def get_house_data(self) -> dict:
+        offer_url = self.get_current_url()
         house_price = self.driver.find_element(
             By.XPATH, value='//*[@id="bottomBox"]/p[2]/span[1]'
         ).text
@@ -124,6 +125,7 @@ class HouseScrapper:
             By.XPATH, value='//*[@id="bottomBox"]/p[2]/span[3]'
         ).text
         house_data = {
+            "url": offer_url,
             "price": house_price,
             "area": area,
             "price per m2": price_per_m2,
