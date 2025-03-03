@@ -27,7 +27,7 @@ class HouseScrapper:
             )
             accept_cookies.click()
             sleep(1)
-        except ElementNotInteractableException:
+        except (ElementNotInteractableException, NoSuchElementException):
             print("Cookies already accepted")
 
         self.open_dropdown()
